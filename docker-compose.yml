@@ -1,0 +1,41 @@
+version: '3'
+services:
+  web:
+    links:
+      - db
+    networks:
+      - backend
+    build: ./
+    ports:
+      - "3000:3000"
+
+    environment:
+      HOST: db
+      DB_USER: root
+      DB_PASS: admin
+      DB_DATABASE: uklon
+  db:
+    build: ./db
+    
+    environment:
+      MYSQL_ROOT_PASSWORD: 'admin'
+      MYSQL_DATABASE: uklon
+      MYSQL_PASSWORD: admin
+      MYSQL_PORT: 3306
+
+    ports:
+      - '3305:3306'
+
+    networks:
+      - backend
+
+    volumes:
+      - type: bind
+        source: ./db
+        target: /docker-entrypoint-initdb.d
+
+volumes:
+  db-data:
+
+networks:
+  backend:
